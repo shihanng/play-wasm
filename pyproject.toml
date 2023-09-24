@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "play-wasm"
+version = "0.1.0"
+description = ""
+authors = ["Shi Han NG <shihanng@gmail.com>"]
+readme = "README.md"
+# packages = [{include = "play_wasm"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+wasmer = "1.1.0"
+wasmer-compiler-cranelift = "1.0.0"
+wasmtime = "^13.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

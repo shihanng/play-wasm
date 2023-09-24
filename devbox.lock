@@ -1,0 +1,11 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "python@3.10": {
+      "last_modified": "2022-06-18T15:44:17Z",
+      "resolved": "github:NixOS/nixpkgs/e0a42267f73ea52adc061a64650fddc59906fc99#python310",
+      "source": "devbox-search",
+      "version": "3.10.4"
+    }
+  }
+}
