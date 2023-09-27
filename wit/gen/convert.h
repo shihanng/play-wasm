@@ -15,14 +15,20 @@ typedef struct {
   size_t len;
 } convert_string_t;
 
+typedef struct {
+  uint8_t *ptr;
+  size_t len;
+} convert_list_u8_t;
+
 // Imported Functions from `convert`
 extern void convert_print(convert_string_t *msg);
 
 // Exported Functions from `convert`
-void convert_exec(void);
+void convert_exec(convert_list_u8_t *input, convert_list_u8_t *ret);
 
 // Helper Functions
 
+void convert_list_u8_free(convert_list_u8_t *ptr);
 // Transfers ownership of `s` into the string `ret`
 void convert_string_set(convert_string_t *ret, char*s);
 

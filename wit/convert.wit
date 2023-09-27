@@ -3,5 +3,5 @@ package local:demo
 world convert {
   import print: func(msg: string)
 
-  export exec: func()
+  export exec: func(input: list<u8>) -> list<u8>
 }

@@ -11,8 +11,10 @@ func init() {
 
 type HostImpl struct{}
 
-func (e HostImpl) Exec() {
-	gen.ConvertPrint("Hello, world!")
+func (e HostImpl) Exec(input []uint8) []uint8 {
+	res := "Hellou, world!" + string([]byte(input))
+	gen.ConvertPrint("Hellou, world!" + string([]byte(input)))
+	return []byte(res)
 }
 
 //go:generate wit-bindgen tiny-go . --out-dir=gen

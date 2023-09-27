@@ -23,10 +23,39 @@ func SetConvert(i Convert) {
   convert = i
 }
 type Convert interface {
-  Exec() 
+  Exec(input []uint8) []uint8 
 }
 //export convert_exec
-func ConvertExec() {
-  convert.Exec()
+func ConvertExec(input *C.convert_list_u8_t, ret *C.convert_list_u8_t) {
+  defer C.convert_list_u8_free(input)
+  var lift_input []uint8
+  lift_input = make([]uint8, input.len)
+  if input.len > 0 {
+    for lift_input_i := 0; lift_input_i < int(input.len); lift_input_i++ {
+      var empty_lift_input C.uint8_t
+      lift_input_ptr := *(*C.uint8_t)(unsafe.Pointer(uintptr(unsafe.Pointer(input.ptr)) +
+      uintptr(lift_input_i)*unsafe.Sizeof(empty_lift_input)))
+      var list_lift_input uint8
+      list_lift_input = uint8(lift_input_ptr)
+      lift_input[lift_input_i] = list_lift_input
+    }
+  }
+  result := convert.Exec(lift_input)
+  var lower_result C.convert_list_u8_t
+  if len(result) == 0 {
+    lower_result.ptr = nil
+    lower_result.len = 0
+  } else {
+    var empty_lower_result C.uint8_t
+    lower_result.ptr = (*C.uint8_t)(C.malloc(C.size_t(len(result)) * C.size_t(unsafe.Sizeof(empty_lower_result))))
+    lower_result.len = C.size_t(len(result))
+    for lower_result_i := range result {
+      lower_result_ptr := (*C.uint8_t)(unsafe.Pointer(uintptr(unsafe.Pointer(lower_result.ptr)) +
+      uintptr(lower_result_i)*unsafe.Sizeof(empty_lower_result)))
+      lower_result_ptr_value := C.uint8_t(result[lower_result_i])
+      *lower_result_ptr = lower_result_ptr_value
+    }
+  }
+  *ret = lower_result
   
 }

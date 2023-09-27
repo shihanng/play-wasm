@@ -1,3 +1,5 @@
+import json
+
 from pyconvert import Root, RootImports, imports
 from wasmtime import Store
 
@@ -15,7 +17,11 @@ def main():
             Host(), None, None, None, None, None, None, None, None, None, None, None
         ),
     )
-    demo.exec(store)
+    data = {"key": "value"}
+    json_str = json.dumps(data)
+    json_bytes = json_str.encode("utf-8")
+    res = demo.exec(store, json_bytes)
+    print(res.decode("utf-8"))
 
 
 if __name__ == "__main__":
