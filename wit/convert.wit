@@ -1,0 +1,7 @@
+package local:demo
+
+world convert {
+  import print: func(msg: string)
+
+  export exec: func()
+}
