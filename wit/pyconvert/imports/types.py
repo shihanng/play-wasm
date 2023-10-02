@@ -1,7 +1,7 @@
 from ..imports import streams
 from ..types import Result
 from abc import abstractmethod
-from enum import Enum
+from enum import Enum, Flag, auto
 from typing import Protocol
 
 Descriptor = int
@@ -46,6 +46,14 @@ class ErrorCode(Enum):
     TEXT_FILE_BUSY = 35
     CROSS_DEVICE = 36
 
+class DescriptorFlags(Flag):
+    READ = auto()
+    WRITE = auto()
+    FILE_INTEGRITY_SYNC = auto()
+    DATA_INTEGRITY_SYNC = auto()
+    REQUESTED_WRITE_SYNC = auto()
+    MUTATE_DIRECTORY = auto()
+
 class DescriptorType(Enum):
     UNKNOWN = 0
     BLOCK_DEVICE = 1
@@ -56,6 +64,21 @@ class DescriptorType(Enum):
     REGULAR_FILE = 6
     SOCKET = 7
 
+class PathFlags(Flag):
+    SYMLINK_FOLLOW = auto()
+
+class OpenFlags(Flag):
+    CREATE = auto()
+    DIRECTORY = auto()
+    EXCLUSIVE = auto()
+    TRUNCATE = auto()
+
+class Modes(Flag):
+    READABLE = auto()
+    WRITABLE = auto()
+    EXECUTABLE = auto()
+
+DirectoryEntryStream = int
 class HostTypes(Protocol):
     @abstractmethod
     def write_via_stream(self, this: Descriptor, offset: Filesize) -> Result[OutputStream, ErrorCode]:
@@ -64,9 +87,24 @@ class HostTypes(Protocol):
     def append_via_stream(self, this: Descriptor) -> Result[OutputStream, ErrorCode]:
         raise NotImplementedError
     @abstractmethod
+    def get_flags(self, this: Descriptor) -> Result[DescriptorFlags, ErrorCode]:
+        raise NotImplementedError
+    @abstractmethod
     def get_type(self, this: Descriptor) -> Result[DescriptorType, ErrorCode]:
         raise NotImplementedError
     @abstractmethod
+    def open_at(self, this: Descriptor, path_flags: PathFlags, path: str, open_flags: OpenFlags, flags: DescriptorFlags, modes: Modes) -> Result[Descriptor, ErrorCode]:
+        raise NotImplementedError
+    @abstractmethod
+    def remove_directory_at(self, this: Descriptor, path: str) -> Result[None, ErrorCode]:
+        raise NotImplementedError
+    @abstractmethod
+    def unlink_file_at(self, this: Descriptor, path: str) -> Result[None, ErrorCode]:
+        raise NotImplementedError
+    @abstractmethod
     def drop_descriptor(self, this: Descriptor) -> None:
+        raise NotImplementedError
+    @abstractmethod
+    def drop_directory_entry_stream(self, this: DirectoryEntryStream) -> None:
         raise NotImplementedError
 
