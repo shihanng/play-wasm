@@ -1,5 +1,6 @@
 import json
 
+import wasmtime.bindgen
 from pyconvert import Root, RootImports, imports
 from wasmtime import Store
 
@@ -9,12 +10,37 @@ class Host(imports.Host):
         print(s + "test")
 
 
+class HostEnvironment:
+    def get_environment(self):
+        return [("TMPDIR", "/tmp2/")]
+
+
+class HostPreopens:
+    def get_directories(self):
+        return []
+
+
 def main():
     store = Store()
     demo = Root(
         store,
         RootImports(
-            Host(), None, None, None, None, None, None, None, None, None, None, None
+            Host(),
+            None,
+            None,
+            None,
+            None,
+            HostPreopens(),
+            HostEnvironment(),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
         ),
     )
     data = {"key": "value"}
